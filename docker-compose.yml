@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  mysql-m:
+    image: mysql:5.7
+    container_name: mysql-m
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: replication_db
+    volumes:
+      - ./master/data:/var/lib/mysql
+      - ./master/my.cnf:/etc/mysql/my.cnf
+      - ./master/init_replication.sql:/docker-entrypoint-initdb.d/init_replication.sql
+    ports:
+      - "3306:3306"
+
+  mysql-s1:
+    image: mysql:5.7
+    container_name: mysql-s1
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+    volumes:
+      - ./slave1/data:/var/lib/mysql
+      - ./slave1/my.cnf:/etc/mysql/my.cnf
+      - ./slave1/init_slave.sql:/docker-entrypoint-initdb.d/init_slave.sql
+    ports:
+      - "3307:3306"
+
+  mysql-s2:
+    image: mysql:5.7
+    container_name: mysql-s2
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+    volumes:
+      - ./slave2/data:/var/lib/mysql
+      - ./slave2/my.cnf:/etc/mysql/my.cnf
+      - ./slave2/init_slave.sql:/docker-entrypoint-initdb.d/init_slave.sql
+    ports:
+      - "3308:3306"
